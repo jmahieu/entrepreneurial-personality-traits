@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrepreneur Match Survey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .survey-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e7ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .rating-option input {
+            display: none;
+        }
+
+        .rating-option label {
+            display: block;
+            padding: 12px 8px;
+            text-align: center;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .rating-option input:checked + label {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .rating-option label:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .trait-result {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .trait-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trait-score {
+            font-size: 1.2rem;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .trait-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .trait-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .emi-result {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .emi-score {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .emi-interpretation {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .emi-details {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .insight-section {
+            background: #f0f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .insight-section h3 {
+            color: #0c4a6e;
+            margin-bottom: 15px;
+        }
+
+        .insight-section p {
+            line-height: 1.6;
+            color: #0f172a;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .survey-card {
+                padding: 25px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .rating-scale {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .rating-option {
+                min-width: auto;
+            }
+        }
+
+        .scale-legend {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .scale-legend h4 {
+            color: #0c4a6e;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="survey-card">
+            <div class="header">
+                <h1>Entrepreneurial Personality Test</h1>
+                <p>Discover how well your Big Five personality traits align with the typical entrepreneur profile</p>
+            </div>
+
+            <div id="survey-section">
+                <div class="scale-legend">
+                    <h4>Rating Scale:</h4>
+                    <p><strong>1</strong> = Very inaccurate · <strong>2</strong> = Moderately inaccurate · <strong>3</strong> = Neither · <strong>4</strong> = Moderately accurate · <strong>5</strong> = Very accurate</p>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">Question 1 of 20</div>
+                </div>
+
+                <div id="questions-container"></div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
+                </div>
+            </div>
+
+            <div class="results-container" id="results-section">
+                <div class="header">
+                    <h1>Your Results</h1>
+                    <p>Based on the Big Five personality model and entrepreneurship research</p>
+                </div>
+                
+                <div id="emi-result"></div>
+                <div id="trait-results"></div>
+                <div id="insights"></div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="restartSurvey()">Take Survey Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Extraversion
+            { text: " I Am the life of the party.", trait: "E", reverse: false },
+            { text: "I Talk to a lot of different people at parties.", trait: "E", reverse: false },
+            { text: "I Don't talk a lot.", trait: "E", reverse: true },
+            { text: "I Keep in the background.", trait: "E", reverse: true },
+            
+            // Agreeableness
+            { text: "I Sympathize with others' feelings.", trait: "A", reverse: false },
+            { text: "I Feel others' emotions.", trait: "A", reverse: false },
+            { text: "I Am not really interested in others.", trait: "A", reverse: true },
+            { text: "I Am not interested in other people's problems.", trait: "A", reverse: true },
+            
+            // Conscientiousness
+            { text: "I Get chores done right away.", trait: "C", reverse: false },
+            { text: "I Like order.", trait: "C", reverse: false },
+            { text: "I Often forget to put things back in their proper place.", trait: "C", reverse: true },
+            { text: "I Make a mess of things.", trait: "C", reverse: true },
+            
+            // Neuroticism
+            { text: "I Have frequent mood swings.", trait: "N", reverse: false },
+            { text: "I Get upset easily.", trait: "N", reverse: false },
+            { text: "I Am relaxed most of the time.", trait: "N", reverse: true },
+            { text: "I Seldom feel blue.", trait: "N", reverse: true },
+            
+            // Openness
+            { text: "I Have a vivid imagination.", trait: "O", reverse: false },
+            { text: "I Have difficulty understanding abstract ideas.", trait: "O", reverse: true },
+            { text: "I Am not interested in abstract ideas.", trait: "O", reverse: true },
+            { text: "I Do not have a good imagination.", trait: "O", reverse: true }
+        ];
+
+        let currentQuestion = 0;
+        let responses = {};
+
+        function initializeSurvey() {
+            displayQuestion();
+            updateNavigation();
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('questions-container');
+            const question = questions[currentQuestion];
+            
+            container.innerHTML = `
+                <div class="question-container">
+                    <div class="question">
+                        <div class="question-number">Question ${currentQuestion + 1} of ${questions.length}</div>
+                        <div class="question-text">"${question.text}"</div>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="q${currentQuestion}_1" name="q${currentQuestion}" value="1">
+                                <label for="q${currentQuestion}_1">Very<br>Inaccurate<br>(1)</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="q${currentQuestion}_2" name="q${currentQuestion}" value="2">
+                                <label for="q${currentQuestion}_2">Moderately<br>Inaccurate<br>(2)</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="q${currentQuestion}_3" name="q${currentQuestion}" value="3">
+                                <label for="q${currentQuestion}_3">Neither<br><br>(3)</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="q${currentQuestion}_4" name="q${currentQuestion}" value="4">
+                                <label for="q${currentQuestion}_4">Moderately<br>Accurate<br>(4)</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="q${currentQuestion}_5" name="q${currentQuestion}" value="5">
+                                <label for="q${currentQuestion}_5">Very<br>Accurate<br>(5)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Set previously selected answer
+            if (responses[currentQuestion] !== undefined) {
+                const radio = document.querySelector(`input[name="q${currentQuestion}"][value="${responses[currentQuestion]}"]`);
+                if (radio) radio.checked = true;
+            }
+
+            // Add event listeners
+            const radios = document.querySelectorAll(`input[name="q${currentQuestion}"]`);
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    responses[currentQuestion] = parseInt(radio.value);
+                    updateNavigation();
+                });
+            });
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.textContent = 'Get Results';
+                nextBtn.disabled = responses[currentQuestion] === undefined;
+            } else {
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = responses[currentQuestion] === undefined;
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+                updateNavigation();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+                updateNavigation();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            // Calculate trait scores
+            const traitSums = { E: 0, A: 0, C: 0, N: 0, O: 0 };
+            const traitCounts = { E: 0, A: 0, C: 0, N: 0, O: 0 };
+
+            questions.forEach((question, index) => {
+                let score = responses[index];
+                if (question.reverse) {
+                    score = 6 - score; // Reverse score (1↔5, 2↔4, 3 stays 3)
+                }
+                traitSums[question.trait] += score;
+                traitCounts[question.trait]++;
+            });
+
+            // Convert to 0-100 scale
+            const traitScores = {};
+            Object.keys(traitSums).forEach(trait => {
+                const rawSum = traitSums[trait];
+                const minPossible = traitCounts[trait]; // 4 questions per trait, min score 1 each
+                const maxPossible = traitCounts[trait] * 5; // 4 questions per trait, max score 5 each
+                traitScores[trait] = ((rawSum - minPossible) / (maxPossible - minPossible)) * 100;
+            });
+
+            // Calculate EMI
+            const C = traitScores.C;
+            const A_star = 100 - traitScores.A; // Invert
+            const O = traitScores.O;
+            const N_star = 100 - traitScores.N; // Invert
+            const E = traitScores.E;
+
+            const EMI = (0.26 * C + 0.22 * A_star + 0.18 * O + 0.12 * N_star + 0.09 * E) / 0.87;
+
+            displayResults(traitScores, EMI, A_star, N_star);
+            
+            document.getElementById('survey-section').style.display = 'none';
+            document.getElementById('results-section').style.display = 'block';
+        }
+
+        function displayResults(traitScores, EMI, A_star, N_star) {
+            // EMI interpretation
+            let interpretation, description;
+            if (EMI >= 65) {
+                interpretation = "Strong Match";
+                description = "You have a strong match to the typical entrepreneur Big Five profile.";
+            } else if (EMI >= 50) {
+                interpretation = "Moderate Match";
+                description = "You have a moderate match - some traits align with entrepreneurs while others are neutral or opposite.";
+            } else {
+                interpretation = "Low Match";
+                description = "You have a low match with the typical entreprenur on Big Five traits alone. Remember: skills, experience, and other traits still matter greatly for entrepreneurial success.";
+            }
+
+            document.getElementById('emi-result').innerHTML = `
+                <div class="emi-result">
+                    <div class="emi-score">${Math.round(EMI)}</div>
+                    <div class="emi-interpretation">${interpretation}</div>
+                    <div>${description}</div>
+                    <div class="emi-details">
+                        <strong>Entrepreneur Match Index (EMI):</strong> ${Math.round(EMI)}/100<br>
+                        <small>Based on meta-analysis comparing entrepreneurs to managers</small>
+                    </div>
+                </div>
+            `;
+
+            // Trait results
+            const traitNames = {
+                E: 'Extraversion',
+                A: 'Agreeableness',
+                C: 'Conscientiousness',
+                N: 'Neuroticism',
+                O: 'Openness to Experience'
+            };
+
+            let traitResultsHTML = '<h3 style="margin-bottom: 20px;">Your Big Five Scores</h3>';
+            
+            Object.keys(traitScores).forEach(trait => {
+                const score = Math.round(traitScores[trait]);
+                const adjustedScore = trait === 'A' ? Math.round(A_star) : trait === 'N' ? Math.round(N_star) : score;
+                const isAdjusted = trait === 'A' || trait === 'N';
+                
+                traitResultsHTML += `
+                    <div class="trait-result">
+                        <div class="trait-name">
+                            <span>${traitNames[trait]} ${isAdjusted ? '(inverted for EMI)' : ''}</span>
+                            <span class="trait-score">${isAdjusted ? adjustedScore : score}/100</span>
+                        </div>
+                        <div class="trait-bar">
+                            <div class="trait-fill" style="width: ${isAdjusted ? adjustedScore : score}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('trait-results').innerHTML = traitResultsHTML;
+
+            // Insights
+            const boosters = [];
+            const drags = [];
+
+            if (traitScores.C >= 65) boosters.push("High Conscientiousness (organized, achievement-oriented)");
+            if (traitScores.O >= 65) boosters.push("High Openness (creative, curious)");
+            if (N_star >= 65) boosters.push("Low Neuroticism (emotionally stable)");
+            if (traitScores.E >= 65) boosters.push("High Extraversion (assertive, energetic)");
+
+            if (traitScores.C <= 35) drags.push("Low Conscientiousness");
+            if (traitScores.O <= 35) drags.push("Low Openness to Experience");
+            if (traitScores.N >= 65) drags.push("High Neuroticism (emotional volatility)");
+            if (traitScores.A >= 80) drags.push("Very High Agreeableness (may be too accommodating)");
+
+            let insightsHTML = `
+                <div class="insight-section">
+                    <h3>Key Insights</h3>
+                    <p><strong>Top Entrepreneurial Traits:</strong> Research shows that successful entrepreneurs typically score high on <strong>Conscientiousness</strong> (getting things done, organized) and <strong>Openness</strong> (curious, imaginative), while being emotionally stable (low Neuroticism) and slightly less agreeable than average (more willing to make tough decisions).</p>
+            `;
+
+            if (boosters.length > 0) {
+                insightsHTML += `<p><strong>Your Strengths:</strong> ${boosters.join(', ')}</p>`;
+            }
+
+            if (drags.length > 0) {
+                insightsHTML += `<p><strong>Areas for Development:</strong> ${drags.join(', ')}</p>`;
+            }
+
+            insightsHTML += `
+                    <p><strong>Remember:</strong> These are just personality tendencies. Entrepreneurial success depends on many factors including skills, experience, market knowledge, timing, and persistence. Use these insights for self-awareness, not as limitations.</p>
+                </div>
+            `;
+
+            document.getElementById('insights').innerHTML = insightsHTML;
+        }
+
+        function restartSurvey() {
+            currentQuestion = 0;
+            responses = {};
+            document.getElementById('survey-section').style.display = 'block';
+            document.getElementById('results-section').style.display = 'none';
+            initializeSurvey();
+        }
+
+        // Initialize survey when page loads
+        document.addEventListener('DOMContentLoaded', initializeSurvey);
+    </script>
+</body>
+</html>
