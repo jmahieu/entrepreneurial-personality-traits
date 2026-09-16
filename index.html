@@ -1,661 +1,449 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrepreneur Match Survey</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrepreneurial Personality — Big Five Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent-blue:   #4361ee;
+  --accent-blue-d: #2c3fb0;
+  --accent-orange: #e69f00;
+  --accent-green:  #009e73;
+  --accent-sky:    #56b4e9;
+  --accent-verm:   #d55e00;
+  --text-dark: #0a0a0a;
+  --muted: #5b6068;
+  --line: rgba(10,10,10,0.12);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Manrope', sans-serif;
+  background: #f4f5fb;
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: clamp(0.75rem, 3vw, 2.5rem);
+  line-height: 1.5;
+}
+.container { max-width: 720px; margin: 0 auto; }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-            overflow-x: hidden;
-        }
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: clamp(1.1rem, 4vw, 2.4rem);
+  box-shadow: 0 8px 30px rgba(10,10,10,0.08);
+  border: 1px solid rgba(10,10,10,0.05);
+}
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+/* ---------- header ---------- */
+.header { text-align: center; margin-bottom: clamp(1.2rem, 4vw, 2rem); }
+.eyebrow {
+  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent-blue); font-weight: 700;
+}
+h1 {
+  font-family: 'Archivo Black', sans-serif; font-weight: 400;
+  text-transform: uppercase; letter-spacing: 0.01em;
+  font-size: clamp(1.35rem, 5.5vw, 2.2rem); line-height: 1.15; margin: 0.4rem 0;
+}
+.header p { color: var(--muted); font-size: clamp(0.9rem, 2.6vw, 1.02rem); max-width: 46ch; margin: 0.5rem auto 0; }
 
-        .survey-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
+/* ---------- scale legend ---------- */
+.scale-legend {
+  background: rgba(67,97,238,0.06);
+  border: 1px solid rgba(67,97,238,0.15);
+  border-radius: 10px;
+  padding: 0.75rem 1rem; margin-bottom: 1.2rem;
+  font-size: 0.82rem; color: var(--muted);
+}
+.scale-legend strong { color: var(--text-dark); }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+/* ---------- progress ---------- */
+.progress-container { margin-bottom: 1.4rem; }
+.progress-bar { width: 100%; height: 8px; background: rgba(67,97,238,0.15); border-radius: 100px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0%; background: var(--accent-blue); border-radius: 100px; transition: width 0.35s ease; }
+.progress-text { text-align: center; margin-top: 0.5rem; font-size: 0.75rem; color: var(--muted); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
 
-        .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
+/* ---------- question ---------- */
+.question {
+  background: #f8fafc;
+  padding: clamp(1rem, 4vw, 1.6rem);
+  border-radius: 14px;
+  border-left: 5px solid var(--accent-blue);
+  animation: fadeIn 0.35s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.question-text {
+  font-size: clamp(1.05rem, 3.4vw, 1.25rem); font-weight: 700;
+  margin-bottom: 1.1rem; line-height: 1.4;
+}
 
-        .header p {
-            font-size: 1.1rem;
-            color: #666;
-            line-height: 1.6;
-        }
+/* ---------- rating scale (stays horizontal on mobile) ---------- */
+.scale-endlabels {
+  display: flex; justify-content: space-between;
+  font-size: 0.7rem; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem;
+}
+.scale-btns { display: flex; gap: clamp(4px, 1.5vw, 8px); }
+.scale-btn {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.15rem;
+  min-height: 58px; padding: 0.5rem 0.2rem;
+  background: #fff; border: 2px solid var(--line); border-radius: 12px;
+  cursor: pointer; text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.scale-btn input { position: absolute; opacity: 0; pointer-events: none; }
+.scale-btn .num { font-size: 1.15rem; font-weight: 800; color: var(--text-dark); }
+.scale-btn .word { font-size: 0.6rem; line-height: 1.1; color: var(--muted); display: none; }
+.scale-btn:hover { border-color: var(--accent-blue); }
+.scale-btn:has(input:checked) {
+  background: var(--accent-blue); border-color: var(--accent-blue); transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(67,97,238,0.32);
+}
+.scale-btn:has(input:checked) .num,
+.scale-btn:has(input:checked) .word { color: #fff; }
+.scale-btn:has(input:focus-visible) { outline: 3px solid var(--accent-sky); outline-offset: 2px; }
+@media (min-width: 560px) { .scale-btn .word { display: block; } .scale-btn { min-height: 74px; } }
 
-        .progress-container {
-            margin-bottom: 30px;
-        }
+/* ---------- navigation ---------- */
+.navigation { display: flex; justify-content: space-between; gap: 0.8rem; margin-top: 1.6rem; }
+.btn {
+  font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 0.98rem;
+  border-radius: 100px; padding: 0.8rem 1.6rem; cursor: pointer;
+  border: 2px solid transparent; transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+  min-height: 46px;
+}
+.btn-primary { background: var(--accent-blue); color: #fff; }
+.btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(67,97,238,0.35); }
+.btn-secondary { background: #fff; color: var(--accent-blue); border-color: var(--accent-blue); }
+.btn-secondary:hover:not(:disabled) { background: rgba(67,97,238,0.06); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e0e7ff;
-            border-radius: 10px;
-            overflow: hidden;
-        }
+/* ---------- results ---------- */
+.results-container { display: none; }
+.emi-hero {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-d));
+  color: #fff; padding: clamp(1.4rem, 5vw, 2.2rem); border-radius: 18px; text-align: center; margin-bottom: 1.4rem;
+}
+.emi-score { font-family: 'Archivo Black', sans-serif; font-size: clamp(2.6rem, 12vw, 3.6rem); line-height: 1; }
+.emi-score small { font-size: 0.35em; font-family: 'Manrope', sans-serif; font-weight: 700; opacity: 0.8; }
+.emi-interpretation { font-size: clamp(1.05rem, 3.6vw, 1.3rem); font-weight: 800; margin-top: 0.4rem; }
+.emi-desc { font-size: 0.95rem; opacity: 0.92; margin-top: 0.5rem; max-width: 48ch; margin-left: auto; margin-right: auto; }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 10px;
-        }
+.section-title { font-family: 'Archivo Black', sans-serif; font-weight: 400; text-transform: uppercase; font-size: 1rem; letter-spacing: 0.02em; margin: 1.4rem 0 0.9rem; }
 
-        .progress-text {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #666;
-        }
+.trait-result { background: #f8fafc; padding: 1rem 1.1rem; border-radius: 12px; margin-bottom: 0.8rem; border-left: 5px solid var(--accent-blue); }
+.trait-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.trait-name { font-weight: 800; font-size: 1rem; }
+.trait-score { font-family: 'Archivo Black', sans-serif; color: var(--accent-blue); font-size: 1.05rem; }
+.trait-dir { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+.trait-dir .badge { font-weight: 700; }
+.badge-up { color: var(--accent-green); }
+.badge-down { color: var(--accent-verm); }
+.badge-none { color: var(--muted); }
+.trait-bar { height: 9px; background: rgba(10,10,10,0.1); border-radius: 100px; overflow: hidden; margin-top: 0.6rem; position: relative; }
+.trait-fill { height: 100%; background: var(--accent-blue); border-radius: 100px; width: 0; transition: width 0.9s cubic-bezier(0.22,1,0.36,1); }
 
-        .question-container {
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideIn 0.5s ease forwards;
-        }
+/* ---------- per-trait match meter ---------- */
+.trait-legend { font-size: 0.82rem; color: var(--muted); margin: -0.4rem 0 1rem; }
+.trait-chip { font-size: 0.64rem; font-weight: 800; padding: 0.22em 0.7em; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+.chip-up   { background: rgba(0,158,115,0.16);  color: var(--accent-green); }
+.chip-down { background: rgba(213,94,0,0.16);   color: var(--accent-verm); }
+.chip-none { background: rgba(10,10,10,0.07);   color: var(--muted); }
+.trait-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.25rem; }
+.trait-sub strong { color: var(--text-dark); }
+.match-meter { position: relative; height: 15px; background: rgba(10,10,10,0.08); border-radius: 100px; margin-top: 0.75rem; }
+.match-fill { position: absolute; top: 0; bottom: 0; border-radius: 100px; transition: left 0.7s cubic-bezier(0.22,1,0.36,1), width 0.7s cubic-bezier(0.22,1,0.36,1); }
+.match-fill.up   { background: var(--accent-green); }
+.match-fill.down { background: var(--accent-verm); }
+.match-fill.none { background: rgba(10,10,10,0.3); }
+.match-center { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: rgba(10,10,10,0.45); transform: translateX(-1px); border-radius: 2px; }
+.match-ends { display: flex; justify-content: space-between; font-size: 0.64rem; color: var(--muted); margin-top: 0.3rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.emi-anchor { font-size: 0.75rem; opacity: 0.85; margin-top: 0.6rem; }
 
-        @keyframes slideIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.method {
+  background: rgba(230,159,0,0.10); border: 1px solid rgba(230,159,0,0.3);
+  border-radius: 12px; padding: 1rem 1.15rem; margin-top: 1.2rem; font-size: 0.86rem; color: #4a4030;
+}
+.method h3 { font-family: 'Manrope', sans-serif; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+.method ul { margin: 0.4rem 0 0 1.1rem; }
+.method li { margin-bottom: 0.2rem; }
 
-        .question {
-            background: #f8fafc;
-            padding: 25px;
-            border-radius: 15px;
-            border-left: 4px solid #667eea;
-            margin-bottom: 20px;
-        }
-
-        .question-text {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #2d3748;
-            margin-bottom: 15px;
-        }
-
-        .question-number {
-            font-size: 0.9rem;
-            color: #667eea;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .rating-scale {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .rating-option {
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .rating-option input {
-            display: none;
-        }
-
-        .rating-option label {
-            display: block;
-            padding: 12px 8px;
-            text-align: center;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .rating-option input:checked + label {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .rating-option label:hover {
-            border-color: #667eea;
-            transform: translateY(-1px);
-        }
-
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 40px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            background: #f7fafc;
-            color: #4a5568;
-            border: 2px solid #e2e8f0;
-        }
-
-        .btn-secondary:hover {
-            background: #edf2f7;
-            border-color: #cbd5e0;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .results-container {
-            display: none;
-        }
-
-        .trait-result {
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #667eea;
-        }
-
-        .trait-name {
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .trait-score {
-            font-size: 1.2rem;
-            color: #667eea;
-            font-weight: 700;
-        }
-
-        .trait-bar {
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-
-        .trait-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
-            transition: width 1s ease;
-        }
-
-        .emi-result {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .emi-score {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .emi-interpretation {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-        }
-
-        .emi-details {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-
-        .insight-section {
-            background: #f0f9ff;
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 20px;
-            border-left: 4px solid #0ea5e9;
-        }
-
-        .insight-section h3 {
-            color: #0c4a6e;
-            margin-bottom: 15px;
-        }
-
-        .insight-section p {
-            line-height: 1.6;
-            color: #0f172a;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .survey-card {
-                padding: 25px;
-                border-radius: 15px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .rating-scale {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .rating-option {
-                min-width: auto;
-            }
-        }
-
-        .scale-legend {
-            background: #f0f9ff;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
-        }
-
-        .scale-legend h4 {
-            color: #0c4a6e;
-            margin-bottom: 8px;
-        }
-    </style>
+.center { text-align: center; margin-top: 1.6rem; }
+footer { margin-top: 1.6rem; font-size: 0.78rem; color: var(--muted); text-align: center; }
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="survey-card">
-            <div class="header">
-                <h1>Entrepreneurial Personality Test</h1>
-                <p>Discover how well your Big Five personality traits align with the typical entrepreneur profile</p>
-            </div>
+<div class="container">
+  <div class="card">
 
-            <div id="survey-section">
-                <div class="scale-legend">
-                    <h4>Rating Scale:</h4>
-                    <p><strong>1</strong> = Very inaccurate · <strong>2</strong> = Moderately inaccurate · <strong>3</strong> = Neither · <strong>4</strong> = Moderately accurate · <strong>5</strong> = Very accurate</p>
-                </div>
-
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill"></div>
-                    </div>
-                    <div class="progress-text" id="progress-text">Question 1 of 20</div>
-                </div>
-
-                <div id="questions-container"></div>
-
-                <div class="navigation">
-                    <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>Previous</button>
-                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
-                </div>
-            </div>
-
-            <div class="results-container" id="results-section">
-                <div class="header">
-                    <h1>Your Results</h1>
-                    <p>Based on the Big Five personality model and entrepreneurship research</p>
-                </div>
-                
-                <div id="emi-result"></div>
-                <div id="trait-results"></div>
-                <div id="insights"></div>
-                
-                <div style="text-align: center; margin-top: 30px;">
-                    <button class="btn btn-primary" onclick="restartSurvey()">Take Survey Again</button>
-                </div>
-            </div>
-        </div>
+    <div class="header">
+      <h1>Entrepreneurial Personality</h1>
+      <p>How closely do your Big&nbsp;Five traits resemble the typical entrepreneur profile? </p>
     </div>
 
-    <script>
-        const questions = [
-            // Extraversion
-            { text: "I am the life of the party.", trait: "E", reverse: false },
-            { text: "I talk to a lot of different people at parties.", trait: "E", reverse: false },
-            { text: "I don't talk a lot.", trait: "E", reverse: true },
-            { text: "I keep in the background.", trait: "E", reverse: true },
-            
-            // Agreeableness
-            { text: "I sympathize with others' feelings.", trait: "A", reverse: false },
-            { text: "I feel others' emotions.", trait: "A", reverse: false },
-            { text: "I am not really interested in others.", trait: "A", reverse: true },
-            { text: "I am not interested in other people's problems.", trait: "A", reverse: true },
-            
-            // Conscientiousness
-            { text: "I get chores done right away.", trait: "C", reverse: false },
-            { text: "I like order.", trait: "C", reverse: false },
-            { text: "I often forget to put things back in their proper place.", trait: "C", reverse: true },
-            { text: "I make a mess of things.", trait: "C", reverse: true },
-            
-            // Neuroticism
-            { text: "I have frequent mood swings.", trait: "N", reverse: false },
-            { text: "I get upset easily.", trait: "N", reverse: false },
-            { text: "I am relaxed most of the time.", trait: "N", reverse: true },
-            { text: "I seldom feel blue.", trait: "N", reverse: true },
-            
-            // Openness
-            { text: "I have a vivid imagination.", trait: "O", reverse: false },
-            { text: "I have difficulty understanding abstract ideas.", trait: "O", reverse: true },
-            { text: "I am not interested in abstract ideas.", trait: "O", reverse: true },
-            { text: "I do not have a good imagination.", trait: "O", reverse: true }
-        ];
+    <!-- ===================== SURVEY ===================== -->
+    <div id="survey-section">
+      <div class="scale-legend">
+        For each statement, choose how accurately it describes you:
+        <strong>1</strong> very inaccurate · <strong>2</strong> moderately inaccurate ·
+        <strong>3</strong> neither · <strong>4</strong> moderately accurate ·
+        <strong>5</strong> very accurate.
+      </div>
 
-        let currentQuestion = 0;
-        let responses = {};
+      <div class="progress-container">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-text" id="progress-text">Question 1 of 20</div>
+      </div>
 
-        function initializeSurvey() {
-            displayQuestion();
-            updateNavigation();
-        }
+      <div id="questions-container"></div>
+    </div>
 
-        function displayQuestion() {
-            const container = document.getElementById('questions-container');
-            const question = questions[currentQuestion];
-            
-            container.innerHTML = `
-                <div class="question-container">
-                    <div class="question">
-                        <div class="question-number">Question ${currentQuestion + 1} of ${questions.length}</div>
-                        <div class="question-text">"${question.text}"</div>
-                        <div class="rating-scale">
-                            <div class="rating-option">
-                                <input type="radio" id="q${currentQuestion}_1" name="q${currentQuestion}" value="1">
-                                <label for="q${currentQuestion}_1">Very<br>Inaccurate<br>(1)</label>
-                            </div>
-                            <div class="rating-option">
-                                <input type="radio" id="q${currentQuestion}_2" name="q${currentQuestion}" value="2">
-                                <label for="q${currentQuestion}_2">Moderately<br>Inaccurate<br>(2)</label>
-                            </div>
-                            <div class="rating-option">
-                                <input type="radio" id="q${currentQuestion}_3" name="q${currentQuestion}" value="3">
-                                <label for="q${currentQuestion}_3">Neither<br><br>(3)</label>
-                            </div>
-                            <div class="rating-option">
-                                <input type="radio" id="q${currentQuestion}_4" name="q${currentQuestion}" value="4">
-                                <label for="q${currentQuestion}_4">Moderately<br>Accurate<br>(4)</label>
-                            </div>
-                            <div class="rating-option">
-                                <input type="radio" id="q${currentQuestion}_5" name="q${currentQuestion}" value="5">
-                                <label for="q${currentQuestion}_5">Very<br>Accurate<br>(5)</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+    <!-- ===================== RESULTS ===================== -->
+    <div class="results-container" id="results-section">
+      <div class="header">
+        <div class="eyebrow">Your results</div>
+        <h1>How you match</h1>
+      </div>
+      <div id="emi-result"></div>
+      <div class="section-title">How you compare, trait by trait</div>
+      <p class="trait-legend">Each bar shows how far you lean toward the entrepreneur end of that trait. The centre line is neutral (an average manager).</p>
+      <div id="trait-results"></div>
+      <div id="method"></div>
+      <div class="center">
+        <button class="btn btn-primary" onclick="restartSurvey()">Take it again</button>
+      </div>
+    </div>
 
-            // Set previously selected answer
-            if (responses[currentQuestion] !== undefined) {
-                const radio = document.querySelector(`input[name="q${currentQuestion}"][value="${responses[currentQuestion]}"]`);
-                if (radio) radio.checked = true;
-            }
+    <footer>&copy; Jeroen Mahieu</footer>
+  </div>
+</div>
 
-            // Add event listeners
-            const radios = document.querySelectorAll(`input[name="q${currentQuestion}"]`);
-            radios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    responses[currentQuestion] = parseInt(radio.value);
-                    updateNavigation();
-                });
-            });
+<script>
+/* ---------------- Big Five items (Mini-IPIP, 4 per trait) ---------------- */
+const questions = [
+  // Extraversion
+  { text: "I am the life of the party.", trait: "E", reverse: false },
+  { text: "I talk to a lot of different people at parties.", trait: "E", reverse: false },
+  { text: "I don't talk a lot.", trait: "E", reverse: true },
+  { text: "I keep in the background.", trait: "E", reverse: true },
+  // Agreeableness
+  { text: "I sympathize with others' feelings.", trait: "A", reverse: false },
+  { text: "I feel others' emotions.", trait: "A", reverse: false },
+  { text: "I am not really interested in others.", trait: "A", reverse: true },
+  { text: "I am not interested in other people's problems.", trait: "A", reverse: true },
+  // Conscientiousness
+  { text: "I get chores done right away.", trait: "C", reverse: false },
+  { text: "I like order.", trait: "C", reverse: false },
+  { text: "I often forget to put things back in their proper place.", trait: "C", reverse: true },
+  { text: "I make a mess of things.", trait: "C", reverse: true },
+  // Neuroticism
+  { text: "I have frequent mood swings.", trait: "N", reverse: false },
+  { text: "I get upset easily.", trait: "N", reverse: false },
+  { text: "I am relaxed most of the time.", trait: "N", reverse: true },
+  { text: "I seldom feel blue.", trait: "N", reverse: true },
+  // Openness
+  { text: "I have a vivid imagination.", trait: "O", reverse: false },
+  { text: "I have difficulty understanding abstract ideas.", trait: "O", reverse: true },
+  { text: "I am not interested in abstract ideas.", trait: "O", reverse: true },
+  { text: "I do not have a good imagination.", trait: "O", reverse: true }
+];
 
-            updateProgress();
-        }
+/* ---------------- Zhao & Seibert (2006) meta-analytic results ----------------
+   d    = corrected effect size d_c (Table 1): standardized mean difference,
+          entrepreneurs vs. managers (signed; + = entrepreneurs higher).
+   beta = standardized regression coefficient (Table 2), the trait's unique
+          contribution to predicting entrepreneurial status; used as the index weight.
+   dir  = +1 entrepreneurs higher, -1 entrepreneurs lower.
+   Extraversion's 90% CI includes zero -> no reliable difference (ns). */
+const TRAIT_META = {
+  C: { name: "Conscientiousness",      dir: +1, d:  0.45, beta: 0.26, ns: false, blurb: "organized, disciplined, achievement-driven" },
+  N: { name: "Neuroticism",            dir: -1, d: -0.37, beta: 0.12, ns: false, blurb: "entrepreneurs tend to be emotionally stable (low N)" },
+  O: { name: "Openness to Experience", dir: +1, d:  0.36, beta: 0.18, ns: false, blurb: "curious, imaginative, open to new ideas" },
+  A: { name: "Agreeableness",          dir: -1, d: -0.16, beta: 0.22, ns: false, blurb: "entrepreneurs tend to be a little less agreeable" },
+  E: { name: "Extraversion",           dir: +1, d:  0.22, beta: 0.09, ns: true,  blurb: "no reliable difference (CI includes zero)" }
+};
+const ORDER = ["C", "A", "O", "N", "E"];   // by |beta| (Table 2); Extraversion (ns) is smallest
+const SCALE_WORDS = ["Very<br>inaccurate", "Mod.<br>inaccurate", "Neither", "Mod.<br>accurate", "Very<br>accurate"];
 
-        function updateProgress() {
-            const progress = ((currentQuestion + 1) / questions.length) * 100;
-            document.getElementById('progress-fill').style.width = progress + '%';
-            document.getElementById('progress-text').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
-        }
+let currentQuestion = 0;
+let responses = {};
+let advanceTimer = null;
 
-        function updateNavigation() {
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            
-            prevBtn.disabled = currentQuestion === 0;
-            
-            if (currentQuestion === questions.length - 1) {
-                nextBtn.textContent = 'Get Results';
-                nextBtn.disabled = responses[currentQuestion] === undefined;
-            } else {
-                nextBtn.textContent = 'Next';
-                nextBtn.disabled = responses[currentQuestion] === undefined;
-            }
-        }
+function initializeSurvey() { displayQuestion(); }
 
-        function previousQuestion() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                displayQuestion();
-                updateNavigation();
-            }
-        }
+function displayQuestion() {
+  const q = questions[currentQuestion];
+  const n = currentQuestion;
+  document.getElementById('questions-container').innerHTML = `
+    <div class="question">
+      <div class="question-text">${n + 1}. &ldquo;${q.text}&rdquo;</div>
+      <div class="scale-endlabels"><span>Very inaccurate</span><span>Very accurate</span></div>
+      <div class="scale-btns">
+        ${[1,2,3,4,5].map((v,i) => `
+          <label class="scale-btn">
+            <input type="radio" name="q${n}" value="${v}">
+            <span class="num">${v}</span>
+            <span class="word">${SCALE_WORDS[i]}</span>
+          </label>`).join('')}
+      </div>
+    </div>`;
 
-        function nextQuestion() {
-            if (currentQuestion < questions.length - 1) {
-                currentQuestion++;
-                displayQuestion();
-                updateNavigation();
-            } else {
-                showResults();
-            }
-        }
+  if (responses[n] !== undefined) {
+    const r = document.querySelector(`input[name="q${n}"][value="${responses[n]}"]`);
+    if (r) r.checked = true;
+  }
+  document.querySelectorAll(`input[name="q${n}"]`).forEach(radio => {
+    radio.addEventListener('change', () => {
+      responses[n] = parseInt(radio.value, 10);
+      clearTimeout(advanceTimer);
+      advanceTimer = setTimeout(advance, 280);   // gentle auto-advance (to next question, or to results)
+    });
+  });
+  updateProgress();
+}
 
-        function showResults() {
-            // Calculate trait scores
-            const traitSums = { E: 0, A: 0, C: 0, N: 0, O: 0 };
-            const traitCounts = { E: 0, A: 0, C: 0, N: 0, O: 0 };
+function updateProgress() {
+  const pct = ((currentQuestion + 1) / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+}
 
-            questions.forEach((question, index) => {
-                let score = responses[index];
-                if (question.reverse) {
-                    score = 6 - score; // Reverse score (1↔5, 2↔4, 3 stays 3)
-                }
-                traitSums[question.trait] += score;
-                traitCounts[question.trait]++;
-            });
+function advance() {
+  if (currentQuestion < questions.length - 1) { currentQuestion++; displayQuestion(); }
+  else showResults();
+}
 
-            // Convert to 0-100 scale
-            const traitScores = {};
-            Object.keys(traitSums).forEach(trait => {
-                const rawSum = traitSums[trait];
-                const minPossible = traitCounts[trait]; // 4 questions per trait, min score 1 each
-                const maxPossible = traitCounts[trait] * 5; // 4 questions per trait, max score 5 each
-                traitScores[trait] = ((rawSum - minPossible) / (maxPossible - minPossible)) * 100;
-            });
+function showResults() {
+  const sums = { E:0, A:0, C:0, N:0, O:0 };
+  const counts = { E:0, A:0, C:0, N:0, O:0 };
+  questions.forEach((q, i) => {
+    let s = responses[i];
+    if (q.reverse) s = 6 - s;             // 1<->5, 2<->4, 3<->3
+    sums[q.trait] += s; counts[q.trait]++;
+  });
 
-            // Calculate EMI
-            const C = traitScores.C;
-            const A_star = 100 - traitScores.A; // Invert
-            const O = traitScores.O;
-            const N_star = 100 - traitScores.N; // Invert
-            const E = traitScores.E;
+  const traitScores = {};                 // 0-100 per trait
+  Object.keys(sums).forEach(t => {
+    const min = counts[t], max = counts[t] * 5;
+    traitScores[t] = ((sums[t] - min) / (max - min)) * 100;
+  });
 
-            const EMI = (0.26 * C + 0.22 * A_star + 0.18 * O + 0.12 * N_star + 0.09 * E) / 0.87;
+  /* Entrepreneur Match Index: weighted average of trait scores aligned to the
+     entrepreneurial direction, weights = Zhao & Seibert (2006) Table 2 betas. */
+  let num = 0, den = 0;
+  ORDER.forEach(t => {
+    const aligned = (TRAIT_META[t].dir < 0) ? (100 - traitScores[t]) : traitScores[t];
+    num += TRAIT_META[t].beta * aligned;
+    den += TRAIT_META[t].beta;
+  });
+  const EMI = num / den;
 
-            displayResults(traitScores, EMI, A_star, N_star);
-            
-            document.getElementById('survey-section').style.display = 'none';
-            document.getElementById('results-section').style.display = 'block';
-        }
+  displayResults(traitScores, EMI);
+  document.getElementById('survey-section').style.display = 'none';
+  document.getElementById('results-section').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-        function displayResults(traitScores, EMI, A_star, N_star) {
-            // EMI interpretation
-            let interpretation, description;
-            if (EMI >= 65) {
-                interpretation = "Strong Match";
-                description = "You have a strong match to the typical entrepreneur Big Five profile.";
-            } else if (EMI >= 50) {
-                interpretation = "Moderate Match";
-                description = "You have a moderate match - some traits align with entrepreneurs while others are neutral or opposite.";
-            } else {
-                interpretation = "Low Match";
-                description = "You have a low match with the typical entreprenur on Big Five traits alone. Remember: skills, experience, and other traits still matter greatly for entrepreneurial success.";
-            }
+function displayResults(traitScores, EMI) {
+  let interpretation, desc;
+  if (EMI >= 65)      { interpretation = "Strong resemblance"; desc = "Your Big Five profile closely resembles the typical entrepreneur in Zhao &amp; Seibert&rsquo;s meta-analysis."; }
+  else if (EMI >= 50) { interpretation = "Moderate resemblance"; desc = "Some traits line up with the entrepreneur profile while others are neutral or point the other way."; }
+  else                { interpretation = "Weak resemblance"; desc = "Your profile differs from the average entrepreneur on these traits. That is not a verdict &mdash; personality explains only a small part of who succeeds; skills, experience and context matter far more."; }
 
-            document.getElementById('emi-result').innerHTML = `
-                <div class="emi-result">
-                    <div class="emi-score">${Math.round(EMI)}</div>
-                    <div class="emi-interpretation">${interpretation}</div>
-                    <div>${description}</div>
-                    <div class="emi-details">
-                        <strong>Entrepreneur Match Index (EMI):</strong> ${Math.round(EMI)}/100<br>
-                        <small>Based on meta-analysis comparing entrepreneurs to managers</small>
-                    </div>
-                </div>
-            `;
+  document.getElementById('emi-result').innerHTML = `
+    <div class="emi-hero">
+      <div class="emi-score">${Math.round(EMI)}<small>/100</small></div>
+      <div class="emi-interpretation">${interpretation}</div>
+      <div class="emi-desc">${desc}</div>
+      <div class="emi-anchor">50 = neutral · higher = more like the average entrepreneur</div>
+    </div>`;
 
-            // Trait results
-            const traitNames = {
-                E: 'Extraversion',
-                A: 'Agreeableness',
-                C: 'Conscientiousness',
-                N: 'Neuroticism',
-                O: 'Openness to Experience'
-            };
+  const bfmt = (b) => (b >= 0 ? "+" : "−") + Math.abs(b).toFixed(2);
 
-            let traitResultsHTML = '<h3 style="margin-bottom: 20px;">Your Big Five Scores</h3>';
-            
-            Object.keys(traitScores).forEach(trait => {
-                const score = Math.round(traitScores[trait]);
-                const adjustedScore = trait === 'A' ? Math.round(A_star) : trait === 'N' ? Math.round(N_star) : score;
-                const isAdjusted = trait === 'A' || trait === 'N';
-                
-                traitResultsHTML += `
-                    <div class="trait-result">
-                        <div class="trait-name">
-                            <span>${traitNames[trait]} ${isAdjusted ? '(inverted for EMI)' : ''}</span>
-                            <span class="trait-score">${isAdjusted ? adjustedScore : score}/100</span>
-                        </div>
-                        <div class="trait-bar">
-                            <div class="trait-fill" style="width: ${isAdjusted ? adjustedScore : score}%"></div>
-                        </div>
-                    </div>
-                `;
-            });
+  document.getElementById('trait-results').innerHTML = ORDER.map(t => {
+    const m = TRAIT_META[t];
+    const raw = Math.round(traitScores[t]);
+    // "aligned" = how far you lean toward the entrepreneur end (0 = opposite end, 100 = their end)
+    const aligned = (m.dir < 0) ? (100 - traitScores[t]) : traitScores[t];
+    const aR = Math.round(aligned);
 
-            document.getElementById('trait-results').innerHTML = traitResultsHTML;
+    let cls, chip, chipCls;
+    if (m.ns)               { cls = 'none'; chip = 'not distinctive';    chipCls = 'chip-none'; }
+    else if (aligned >= 60) { cls = 'up';   chip = 'like entrepreneurs'; chipCls = 'chip-up';   }
+    else if (aligned <= 40) { cls = 'down'; chip = 'unlike entrepreneurs'; chipCls = 'chip-down'; }
+    else                    { cls = 'none'; chip = 'about neutral';      chipCls = 'chip-none'; }
 
-            // Insights
-            const boosters = [];
-            const drags = [];
+    // diverging fill: grows from the centre (50) toward the user's aligned position
+    const dLeft  = aligned >= 50 ? 50 : aR;
+    const dWidth = aligned >= 50 ? (aR - 50) : (50 - aR);
 
-            if (traitScores.C >= 65) boosters.push("High Conscientiousness (organized, achievement-oriented)");
-            if (traitScores.O >= 65) boosters.push("High Openness (creative, curious)");
-            if (N_star >= 65) boosters.push("Low Neuroticism (emotionally stable)");
-            if (traitScores.E >= 65) boosters.push("High Extraversion (assertive, energetic)");
+    const subText = m.ns
+      ? `Entrepreneurs show <strong>no reliable difference</strong> here (&beta; = ${bfmt(m.dir * m.beta)}, ns) · your level ${raw}/100`
+      : `Entrepreneurs score <strong>${m.dir > 0 ? 'higher' : 'lower'}</strong> on this (&beta; = ${bfmt(m.dir * m.beta)}) · your level ${raw}/100`;
 
-            if (traitScores.C <= 35) drags.push("Low Conscientiousness");
-            if (traitScores.O <= 35) drags.push("Low Openness to Experience");
-            if (traitScores.N >= 65) drags.push("High Neuroticism (emotional volatility)");
-            if (traitScores.A >= 80) drags.push("Very High Agreeableness (may be too accommodating)");
+    return `
+      <div class="trait-result">
+        <div class="trait-head">
+          <span class="trait-name">${m.name}</span>
+          <span class="trait-chip ${chipCls}">${chip}</span>
+        </div>
+        <div class="trait-sub">${subText}</div>
+        <div class="match-meter">
+          <div class="match-fill ${cls}" style="left:50%;width:0" data-left="${dLeft}" data-width="${dWidth}"></div>
+          <div class="match-center"></div>
+        </div>
+        <div class="match-ends"><span>← unlike entrepreneurs</span><span>like entrepreneurs →</span></div>
+      </div>`;
+  }).join('');
 
-            let insightsHTML = `
-                <div class="insight-section">
-                    <h3>Key Insights</h3>
-                    <p><strong>Top Entrepreneurial Traits:</strong> Research shows that successful entrepreneurs typically score high on <strong>Conscientiousness</strong> (getting things done, organized) and <strong>Openness</strong> (curious, imaginative), while being emotionally stable (low Neuroticism) and slightly less agreeable than average (more willing to make tough decisions).</p>
-            `;
+  // animate the meters out from the centre after paint
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.match-fill').forEach(el => {
+      el.style.left = el.dataset.left + '%';
+      el.style.width = el.dataset.width + '%';
+    });
+  });
 
-            if (boosters.length > 0) {
-                insightsHTML += `<p><strong>Your Strengths:</strong> ${boosters.join(', ')}</p>`;
-            }
+  document.getElementById('method').innerHTML = `
+    <div class="method">
+      <h3>How the match score is built</h3>
+      Figures come from Zhao &amp; Seibert&rsquo;s (2006) meta-analysis of entrepreneurs vs. managers.
+      The <strong>&beta;</strong> next to each trait is its standardized regression coefficient (Table 2) &mdash;
+      the trait&rsquo;s unique contribution when all five are entered together to predict entrepreneurial
+      status (entrepreneur = 1, manager = 0):
+      <ul>
+        <li>Higher in entrepreneurs: Conscientiousness (+.26), Openness (+.18)</li>
+        <li>Lower in entrepreneurs: Agreeableness (&minus;.22), Neuroticism (&minus;.12)</li>
+        <li>Extraversion (+.09): not significant</li>
+      </ul>
+      The five together predict entrepreneurial status with Multiple R = .37 &mdash; about 14% of the
+      variance. (The raw mean differences, Cohen&rsquo;s d, tell the same story and are largest for
+      Conscientiousness, d = +0.45.) Each bar above shows how far you lean toward the entrepreneurial
+      end of that trait (centre = an average manager). The <strong>Entrepreneur Match Index</strong>
+      combines these five, weighted by the &beta;s. Personality shifts the odds, but only modestly.
+    </div>`;
+}
 
-            if (drags.length > 0) {
-                insightsHTML += `<p><strong>Areas for Development:</strong> ${drags.join(', ')}</p>`;
-            }
+function restartSurvey() {
+  clearTimeout(advanceTimer);
+  currentQuestion = 0; responses = {};
+  document.getElementById('survey-section').style.display = 'block';
+  document.getElementById('results-section').style.display = 'none';
+  initializeSurvey();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-            insightsHTML += `
-                    <p><strong>Remember:</strong> These are just personality tendencies. Entrepreneurial success depends on many factors including skills, experience, market knowledge, timing, and persistence. Use these insights for self-awareness, not as limitations.</p>
-                </div>
-            `;
-
-            document.getElementById('insights').innerHTML = insightsHTML;
-        }
-
-        function restartSurvey() {
-            currentQuestion = 0;
-            responses = {};
-            document.getElementById('survey-section').style.display = 'block';
-            document.getElementById('results-section').style.display = 'none';
-            initializeSurvey();
-        }
-
-        // Initialize survey when page loads
-        document.addEventListener('DOMContentLoaded', initializeSurvey);
-    </script>
+document.addEventListener('DOMContentLoaded', initializeSurvey);
+</script>
 </body>
 </html>
